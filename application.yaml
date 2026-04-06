@@ -12,29 +12,13 @@ management:
     web:
       exposure:
         include: gateway
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
   tracing:
     sampling:
       probability: 1.0 # 100% of traces. In prod, use 0.1 (10%)
 
-# In Spring Boot 3, Zipkin is usually configured under management.tracing
-# If using the specialized Zipkin Brave/OTEL starter:
-management:
-  zipkin:
-    tracing:
-      endpoint: "http://localhost:9411/api/v2/spans"
-
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-
-# --- Propagation - OpenTelemetry uses "W3C" (traceparent) by default.
-# Note: In Spring Boot 3, propagation is usually set via:
-# spring.sleuth.propagation.type or management.tracing.propagation.type
-      
-#okta:
-#  oauth2:
-#    issuer: https://dev-15585796.okta.com/oauth2/default
-#    audience: api://default
-#spring:
-#  zipkin:
-#    baseUrl: http://zipkin-svc:9411
