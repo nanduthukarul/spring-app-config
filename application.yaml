@@ -6,27 +6,30 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
 management:
   endpoints:
     web:
       exposure:
         include: gateway
-#send 100% of traces. In prod, you might want 0.1 (10%)
-management:
   tracing:
     sampling:
-      probability: 1.0 
-# The endpoint where OpenTelemetry should push the data
-zipkin:
-  tracing:
-    endpoint : "http://localhost:9411/api/v2/spans"
-# --- Propagation - OpenTelemetry uses "W3C" (traceparent) by default.
-    propagation:
-      type: "w3c, b3"
-# To see Trace IDs in your console logs
+      probability: 1.0 # 100% of traces. In prod, use 0.1 (10%)
+
+# In Spring Boot 3, Zipkin is usually configured under management.tracing
+# If using the specialized Zipkin Brave/OTEL starter:
+management:
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+# --- Propagation - OpenTelemetry uses "W3C" (traceparent) by default.
+# Note: In Spring Boot 3, propagation is usually set via:
+# spring.sleuth.propagation.type or management.tracing.propagation.type
       
 #okta:
 #  oauth2:
