@@ -1,0 +1,44 @@
+server:
+  port: 9090
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns:
+              - "http://localhost:4200"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowed-headers:
+              - "*"
+            allow-credentials: true
+            max-age: 3600
+
+      routes:
+
+        - id: TECHNICAL-ANALYZER
+          uri: lb://TECHNICAL-ANALYZER
+          predicates:
+            - Path=/ta/**
+
+        - id: DELTA-EXCHANGE-API-BRIDGE
+          uri: lb://DELTA-EXCHANGE-API-BRIDGE
+          predicates:
+            - Path=/delta/**
+
+        - id: FYERS-API-BRIDGE
+          uri: lb://FYERS-API-BRIDGE
+          predicates:
+            - Path=/fyers/**
+
+        - id: LLM-AGENT
+          uri: lb://LLM-AGENT
+          predicates:
+            - Path=/llm/**
